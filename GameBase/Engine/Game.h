@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Arsen on 23.11.2025.
 //
 
@@ -10,7 +10,7 @@
 #include <vector>
 #include "Scene/Scene.h"
 
-#include "raygui.h"
+#include "../External/raygui/raygui.h"
 #include "Entity/Player.h"
 #include <memory>
 enum GameState{

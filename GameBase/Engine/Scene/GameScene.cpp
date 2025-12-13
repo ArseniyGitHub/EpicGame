@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Arsen on 23.11.2025.
 //
 
@@ -9,8 +9,8 @@
 
 
 void GameScene::draw(Game *game) {
-    ClearBackground((Color){0, 100, 100, 50});
-    DrawText(TextFormat("Windows 95 is starting... fps: %d", GetFPS()), 50, 50, 90, (Color){0, 255, 0, 100});
+    ClearBackground(Color{0, 100, 100, 50});
+    DrawText(TextFormat("Windows 95 is starting... fps: %d", GetFPS()), 50, 50, 90, Color{0, 255, 0, 100});
     BeginMode3D(camera);
     std::vector<Vector3> cps = {
             {0, 0, 0},

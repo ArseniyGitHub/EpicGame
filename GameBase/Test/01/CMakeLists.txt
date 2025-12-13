@@ -1,5 +1,5 @@
-if(LINUX OR WIN32)
-  add_executable(test "main.cpp")
+﻿if(LINUX OR WIN32)
+  add_executable(test "main.cpp" "../../Engine/Game.cpp" "../../Engine/Scene/Scene.cpp" "../../Engine/Scene/GameScene.cpp" "../../Engine/Scene/MainMenuScene.cpp" "../../Engine/Entity/Entity.cpp" "../../Engine/Entity/Player.cpp")
   target_link_libraries(test PRIVATE raylib)
 elseif(ANDROID)
   add_library(max-client "main.cpp")

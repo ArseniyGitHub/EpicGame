@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Arsen on 23.11.2025.
 //
 
@@ -20,11 +20,11 @@ void MainMenuScene::drawUI(Game *game) {
 
     //DrawCircle(100, 100, 60, Color{0, 0, 0, 255}) END
 
-    if(GuiButton((Rectangle){buttonX, buttonY, defButtonWidth, defButtonHeight}, "START")){
+    if(GuiButton(Rectangle{buttonX, buttonY, defButtonWidth, defButtonHeight}, "START")){
         game->changeScene(GameState::IN_GAME) END
     }
     buttonY += spacing END
-    if(GuiButton((Rectangle){buttonX, buttonY, defButtonWidth, defButtonHeight}, "EXIT")){
+    if(GuiButton(Rectangle{buttonX, buttonY, defButtonWidth, defButtonHeight}, "EXIT")){
         CloseWindow() END
     }
 
