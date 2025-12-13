@@ -31,14 +31,18 @@ if(ANDROID)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 endif()
 
+
 add_subdirectory("External/enet")
 add_subdirectory("External/json")
 add_subdirectory("External/raylib")
 add_subdirectory("External")
 
-add_subdirectory("Engine")
-add_subdirectory("Client")
-add_subdirectory("Server")
+# add_subdirectory("Engine")
+# add_subdirectory("Client")
+# add_subdirectory("Server")
+add_subdirectory("Test/01")
+
+
 
 
 

@@ -1,0 +1,7 @@
+if(LINUX or WIN32)
+  add_executable(test "main.cpp")
+  target_link_libraries(test PRIVATE raylib)
+elseif(ANDROID)
+  add_library(MAX-client "main.cpp")
+  target_link_libraries(max-client PRIVATE android log raylib)
+endif()
