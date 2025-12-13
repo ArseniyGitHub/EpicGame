@@ -1,4 +1,4 @@
-if(LINUX or WIN32)
+if(LINUX OR WIN32)
   add_executable(test "main.cpp")
   target_link_libraries(test PRIVATE raylib)
 elseif(ANDROID)

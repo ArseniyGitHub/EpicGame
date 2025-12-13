@@ -1,12 +1,16 @@
 ﻿# CMakeList.txt: проект CMake для GameBase; включите исходный код и определения,
 # укажите здесь логику для конкретного проекта.
 
+# cmake_minimum_required (VERSION 3.16)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
+project ("GameBase")
+
 set(BUILD_SHARED_LIBS ON)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-set(BUILD_EXAMPLES OFF cache bool "" FORCE)
-set(ENET_TEST OFF cache bool "" FORCE)
-set(ENET_SHARED ON cache bool "" FORCE)
-set(ENET_STATIC OFF cache bool "" FORCE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(ENET_TEST OFF CACHE BOOL "" FORCE)
+set(ENET_SHARED ON CACHE BOOL "" FORCE)
+set(ENET_STATIC OFF CACHE BOOL "" FORCE)
 
 set(CMAKE_CXX_STANDARD 20) 
 set(CMAKE_CXX_STANDARD_REQUIRED ON) 
@@ -35,12 +39,14 @@ endif()
 add_subdirectory("External/enet")
 add_subdirectory("External/json")
 add_subdirectory("External/raylib")
-add_subdirectory("External")
+# add_subdirectory("External")
 
 # add_subdirectory("Engine")
 # add_subdirectory("Client")
 # add_subdirectory("Server")
+
 add_subdirectory("Test/01")
+
 
 
 
