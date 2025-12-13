@@ -2,7 +2,7 @@
 # укажите здесь логику для конкретного проекта.
 
 # cmake_minimum_required (VERSION 3.16)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
 project ("GameBase")
 
 set(BUILD_SHARED_LIBS ON)
