@@ -1,0 +1,9 @@
+[submodule "GameBase/External/raylib"]
+	path = GameBase/External/raylib
+	url = https://github.com/raysan5/raylib
+[submodule "GameBase/External/enet"]
+	path = GameBase/External/enet
+	url = https://github.com/zpl-c/enet
+[submodule "GameBase/External/json"]
+	path = GameBase/External/json
+	url = https://github.com/nlohmann/json
