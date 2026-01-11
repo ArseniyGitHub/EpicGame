@@ -2,8 +2,6 @@
 // Created by Arsen on 23.11.2025.
 //
 
-#ifndef MY_APPLICATION_ENTITY_H
-#define MY_APPLICATION_ENTITY_H
 #pragma once
 #include <raylib.h>
 #include <raymath.h>
@@ -25,4 +23,3 @@ public:
 };
 
 
-#endif //MY_APPLICATION_ENTITY_H

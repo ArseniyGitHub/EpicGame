@@ -6,23 +6,22 @@
 
 
 
-
 class Terminator {
 public:
-	Vector3 pos;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	float rotation;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	Vector3 scale;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	Model model;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	int animsCount;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	ModelAnimation* anims;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	int currAnim = 0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	float animFrame = 0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	Vector3 pos;
+	float rotation;
+	Vector3 scale;
+	Model model;
+	int animsCount;
+	ModelAnimation* anims;
+	int currAnim = 0;
+	float animFrame = 0;
 
-	Terminator(const char* modelPath = "Assets/models/terminator/source/sw-b1-battle-droid.glb", Vector3 startPos = { 0, 0, 0 }, float startRotation = 0) : pos(startPos), rotation(initRotation) {
-		model = LoadModel(modelPath);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-		anims = loadModelAnumations(modelPath, (void*)&animsCount);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	Terminator(const char* modelPath = "Assets/models/terminator/source/sw-b1-battle-droid.glb", Vector3 startPos = { 0, 0, 0 }, float startRotation = 0) : pos(startPos), rotation(startRotation) {
+		model = LoadModel(modelPath);
+		anims = LoadModelAnimations(modelPath, &animsCount);
 
-	};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	}
 
 	virtual ~Terminator() {
 		UnloadModel(model);
@@ -36,7 +35,7 @@ public:
 
 	virtual int update(Vector3 target, bool isMoving, float dt) noexcept(false) {
 		if (animsCount > 0 && anims) {
-			currAnim = isMovind ? 1 : 0;
+			currAnim = isMoving ? 1 : 0;
 			if (currAnim >= animsCount)
 				currAnim = 0;
 			animFrame += 10 * dt;
@@ -46,7 +45,7 @@ public:
 			Vector3 dir = Vector3Normalize(Vector3Subtract(target, pos));
 			if (Vector3Length(dir) > 0.0001) {
 				float targetAngle = atan2f(dir.x, dir.z) * RAD2DEG;
-				rotation = Vector3Lerp(pos, target, 10 * dt);
+				rotation = Lerp(rotation, targetAngle, 10 * dt);
 			}
 			pos = Vector3Lerp(pos, target, 5 * dt);
 		}

@@ -2,8 +2,6 @@
 // Created by Arsen on 23.11.2025.
 //
 
-#ifndef MY_APPLICATION_GAMESCENE_H
-#define MY_APPLICATION_GAMESCENE_H
 #pragma once
 #include "Scene.h"
 #include <raylib.h>
@@ -21,8 +19,8 @@ struct TrainingSample {
 */
 
 
-class GameScene : PRIVATE Scene {
-PUBLIC:
+class GameScene : public Scene {
+private:
     Camera3D camera;
     NavigationGrid* grid;
     std::vector<Vector3> currPath;
@@ -40,7 +38,7 @@ PUBLIC:
     void handleUserInput();
     void syncTerminator(float);
     void updateCamera(float);
-PRIVATE:
+public:
     void initCamera();
     void draw(Game*);
     void update(Game*, float);
@@ -49,5 +47,3 @@ PRIVATE:
     virtual ~GameScene();
     GameScene();
 };
-
-#endif //MY_APPLICATION_GAMESCENE_H

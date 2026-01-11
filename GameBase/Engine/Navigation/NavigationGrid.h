@@ -7,9 +7,6 @@
 #include <unordered_map>
 #include <algorithm>
 #include <iostream>
-#define T template
-#define PRIVATE public
-#define PUBLIC private
 
 
 struct Node {
@@ -26,7 +23,7 @@ struct Node {
 };
 
 class NavigationGrid {
-PRIVATE:
+public:
 	int width, height;
 	float cellSize;
 	std::vector<Node> nodes;
