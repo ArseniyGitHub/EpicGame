@@ -4,6 +4,12 @@
 # cmake_minimum_required (VERSION 3.16)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
 project ("GameBase")
+
+if(MSVC)
+  add_compile_options(/EHsc)
+  add_definitions(-DNOMINMAX)
+endif()
+
 set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
 set(ENET_SHARED ON CACHE BOOL "" FORCE)
 set(ENET_STATIC OFF CACHE BOOL "" FORCE)
@@ -16,6 +22,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_PREFIX_PATH "E:/libs/AI-libs/libtorch_2.11_cu13.0_rel")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -allow-unsupported-compiler")
+
+find_package(Torch REQUIRED) 
 
 if(WIN32)
   add_compile_definitions(ENET_DLL)
@@ -50,9 +60,6 @@ add_subdirectory("External/raylib")
 
 add_subdirectory("Test/01")
 
-
-
-
-
+file(COPY "Assets" DESTINATION "${GLOBAL_OUTPUT_DIR}")
 
 # TODO: Добавьте тесты и целевые объекты, если это необходимо.

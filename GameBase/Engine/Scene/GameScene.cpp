@@ -2,6 +2,7 @@
 // Created by Arsen on 23.11.2025.
 //
 
+#pragma once
 #include "GameScene.h"
 #include "../Game.h"
 #include "../Entity/Player.h"
