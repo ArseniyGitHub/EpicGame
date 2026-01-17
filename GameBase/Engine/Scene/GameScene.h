@@ -10,13 +10,14 @@
 #include "../AI/PathNet.h"
 #include "../Entity/Terminator.h"
 #include <torch/torch.h>
+#include <functional>
 
-/*
+
 struct TrainingSample {
     torch::Tensor input;
-
+    int64_t action;
 };
-*/
+
 
 
 class GameScene : public Scene {
@@ -24,6 +25,10 @@ private:
     Camera3D camera;
     NavigationGrid* grid;
     std::vector<Vector3> currPath;
+    bool useAI = false;
+    bool isTraining = false;
+    std::vector<TrainingSample> dataset;
+    torch::Tensor getGridTensor(Vector3, Vector3);
     float
         camSpd = 20.f,
         zoomSpd = 30.f,

@@ -76,7 +76,6 @@ void GameScene::update(Game *game, float dt) {
 
     if (camPich > 85) camPich = 85;
     if (camPich < 10) camPich = 10;
-    std::cout << camPich << std::endl;
     Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
     forward.y = 0;
     Vector3 right = { -forward.z, 0.f, forward.x };

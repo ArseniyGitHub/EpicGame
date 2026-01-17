@@ -17,10 +17,10 @@ public:
 	int currAnim = 0;
 	float animFrame = 0;
 
-	Terminator(const char* modelPath = "Assets/models/terminator/source/sw-b1-battle-droid.glb", Vector3 startPos = { 0, 0, 0 }, float startRotation = 0) : pos(startPos), rotation(startRotation) {
+	Terminator(const char* modelPath = "Assets/models/terminator/source/sw-b1-battle-droid.glb", Vector3 startPos = { 0, 0, 0 }, Vector3 scale = { 1, 1, 1 }, float startRotation = 0) : pos(startPos), rotation(startRotation), scale(scale) {
 		model = LoadModel(modelPath);
 		anims = LoadModelAnimations(modelPath, &animsCount);
-
+		
 	}
 
 	virtual ~Terminator() {
@@ -29,7 +29,7 @@ public:
 			for (int i = 0; i < animsCount; i++)
 				UnloadModelAnimation(anims[i]);
 
-			// Надо добавить освобождение памяти (хотя зачем?)
+			RL_FREE(anims);
 		}
 	}
 

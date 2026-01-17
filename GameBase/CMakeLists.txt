@@ -49,11 +49,12 @@ endif()
 set(GLOBAL_OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GLOBAL_OUTPUT_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${GLOBAL_OUTPUT_DIR})
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION true)
 add_subdirectory("External/enet")
 add_subdirectory("External/json")
 add_subdirectory("External/raylib")
 # add_subdirectory("External")
-
+#
 # add_subdirectory("Engine")
 # add_subdirectory("Client")
 # add_subdirectory("Server")
