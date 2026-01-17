@@ -73,6 +73,22 @@ void GameScene::update(Game *game, float dt) {
         camPich -= rotationSpd * dt;
     if (IsKeyPressed(KEY_R))
         initCamera();
+    if (IsKeyPressed(KEY_SPACE))
+        useAI = !useAI;
+    if (IsKeyPressed(KEY_T))
+        isTraining = !isTraining;
+    if (IsKeyPressed(KEY_P))
+    {
+        torch::save(aiModel, "PathNet.ai");
+        std::cout << "Модель сохранена!\n";
+    }
+
+    if (isTraining) {
+        if (!currPath.empty()) {
+            collectDataFromAStar();
+        }
+        trainStep();
+    }
 
     float wheel = GetMouseWheelMove();
     cameraDistance -= wheel * 2;
@@ -127,15 +143,15 @@ void GameScene::update(Game *game, float dt) {
                 //std::cout << gx << "  " << gy << std::endl;
                 Node* n = grid->getNode(gx, gy);
                 if (n) n->walkable = !n->walkable;
-                currPath = grid->findPath(startPos, endPos);
+                currPath = grid->findPath(terminator->pos, endPos);
             }
             if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
                 endPos = { gx * grid->cellSize, 0.f, gy * grid->cellSize };
-                currPath = grid->findPath(startPos, endPos);
+                currPath = grid->findPath(terminator->pos, endPos);
             }
             if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
                 startPos = { gx * grid->cellSize, 0.f, gy * grid->cellSize };
-                currPath = grid->findPath(startPos, endPos);
+                currPath = grid->findPath(terminator->pos, endPos);
             }
         }
         else {
@@ -143,7 +159,37 @@ void GameScene::update(Game *game, float dt) {
         }
     }
 
-    if (useAI);
+    if (useAI) {
+        aiModel->eval();
+        torch::NoGradGuard nograd;
+        torch::Tensor input = getGridTensor(terminator->pos, endPos);
+        torch::Tensor output = aiModel->forward(input);
+        int64_t act = output.argmax(1).item<int64_t>();
+        Vector3 nextTarget = terminator->pos;
+        switch (act) {
+        case 0:
+            nextTarget.z += grid->cellSize;
+            break;
+        case 1:
+            nextTarget.z -= grid->cellSize;
+            break;
+        case 2:
+            nextTarget.x += grid->cellSize;
+            break;
+        case 3:
+            nextTarget.x -= grid->cellSize;
+            break;
+        }
+        int nx = round(nextTarget.x / grid->cellSize);
+        int nz = round(nextTarget.z / grid->cellSize);
+        Node* nextNode = grid->getNode(nx, nz);
+        if (nextNode && nextNode->walkable) {
+            terminator->update(nextTarget, true, dt);
+        }
+        else {
+            terminator->update(terminator->pos, false, dt);
+        }
+    }
     else syncTerminatorWithPath(dt);
 }
 
@@ -173,12 +219,76 @@ GameScene::GameScene() {
     this->onEnter();
 }
 
+torch::Tensor GameScene::getGridTensor(Vector3 a, Vector3 b)
+{
+    auto tensor = torch::zeros({ 1, 3, 15 * 15 });
+    for (size_t y = 0; y < grid->height; y++) {
+        for (size_t x = 0; x < grid->width; x++) {
+            if (!grid->getNode(x, y)->walkable) {
+                tensor[0][0][y][x] = 1;
+            }
+        }
+    }
+    int ax = round(a.x / grid->cellSize);
+    int ay = round(a.z / grid->cellSize);
+    if (ax >= 0 && ax < grid->width && ay >= 0 && ay < grid->height)
+    {
+        tensor[0][1][ay][ax] = 1;
+    }
+    int ex = round(b.x / grid->cellSize);
+    int ey = round(b.z / grid->cellSize);
+    if (ex >= 0 && ex < grid->width && ey >= 0 && ey < grid->height)
+    {
+        tensor[0][2][ay][ax] = 1;
+    }
+    return tensor;
+}
+
+void GameScene::collectDataFromAStar()
+{
+    if (currPath.size() < 1)return;
+    torch::Tensor input = getGridTensor(terminator->pos, endPos);
+    Vector3 next = currPath[0];
+    int64_t act = -1;
+    float dx = next.x - terminator->pos.x;
+    float dz = next.z - terminator->pos.z;
+    if (dz > 0.5) act = 0;
+    else if (dz < -0.5) act = 1;
+    if (dx > 0.5) act = 2;
+    else if (dx < -0.5) act = 3;
+    if (act != -1) {
+        dataset.push_back({ input, act });
+    }
+    if (dataset.size() > 2000) dataset.erase(dataset.begin());
+}
+
 void GameScene::syncTerminatorWithPath(float dt) {
     if (!currPath.empty()) {
         Vector3 nextNode(currPath[0]);
-        if (Vector3Distance(terminator->pos, nextNode) < 0.4) {
+        if (Vector3Distance(terminator->pos, nextNode) < 1) {
             currPath.erase(currPath.begin());
         }
         terminator->update(nextNode, true, dt);
     }
+}
+
+void GameScene::trainStep() {
+    if (dataset.size() < 32) {
+        return;
+    }
+    aiModel->train();
+    optimizer->zero_grad();
+    std::vector<torch::Tensor> inputs;
+    std::vector<int64_t> targets;
+    for (size_t i = 0; i < 32; i++) {
+        int idx = GetRandomValue(0, dataset.size() - 1);
+        inputs.push_back(dataset[idx].input);
+        targets.push_back(dataset[idx].action);
+    }
+    torch::Tensor bIn = torch::cat(inputs, 0);
+    torch::Tensor bTarget = torch::tensor(targets, torch::kLong);
+    torch::Tensor prediction = aiModel->forward(bIn);
+    torch::Tensor loss = torch::nll_loss(prediction, bTarget);
+    loss.backward();
+    optimizer->step();
 }
