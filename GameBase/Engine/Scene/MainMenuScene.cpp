@@ -5,27 +5,24 @@
 #include "MainMenuScene.h"
 #include "../Game.h"
 
-#define SET =
-#define END ;
-
 void MainMenuScene::drawUI(Game *game) {
-    int width SET GetScreenWidth() END
-    int height SET GetScreenHeight() END
+    int width = GetScreenWidth();
+    int height = GetScreenHeight();
 
-    const float defButtonWidth SET 500 END
-    const float defButtonHeight SET 100 END
-    float buttonX SET (width - defButtonWidth) / 2 END
-    float buttonY SET (height * 0.45) END
-    float spacing SET 120 END
+    const float defButtonWidth = 500;
+    const float defButtonHeight = 100;
+    float buttonX = (width - defButtonWidth) / 2;
+    float buttonY = (height * 0.45);
+    float spacing = 120;
 
-    //DrawCircle(100, 100, 60, Color{0, 0, 0, 255}) END
+    //DrawCircle(100, 100, 60, Color{0, 0, 0, 255});
 
     if(GuiButton(Rectangle{buttonX, buttonY, defButtonWidth, defButtonHeight}, "START")){
-        game->changeScene(GameState::IN_GAME) END
+        game->changeScene(GameState::IN_GAME);
     }
-    buttonY += spacing END
+    buttonY += spacing;
     if(GuiButton(Rectangle{buttonX, buttonY, defButtonWidth, defButtonHeight}, "EXIT")){
-        CloseWindow() END
+        CloseWindow();
     }
 
 }

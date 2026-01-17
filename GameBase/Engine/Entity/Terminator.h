@@ -17,7 +17,7 @@ public:
 	int currAnim = 0;
 	float animFrame = 0;
 
-	Terminator(const char* modelPath = "Assets/models/terminator/source/sw-b1-battle-droid.glb", Vector3 startPos = { 0, 0, 0 }, Vector3 scale = { 1, 1, 1 }, float startRotation = 0) : pos(startPos), rotation(startRotation), scale(scale) {
+	Terminator(const char* modelPath = "Assets/models/terminator/source/sw-b1-battle-droid.glb", Vector3 startPos = { 1.5, 0, 1.5 }, Vector3 scale = { 1, 1, 1 }, float startRotation = 0) : pos(startPos), rotation(startRotation), scale(scale) {
 		model = LoadModel(modelPath);
 		anims = LoadModelAnimations(modelPath, &animsCount);
 		
@@ -33,7 +33,7 @@ public:
 		}
 	}
 
-	virtual int update(Vector3 target, bool isMoving, float dt) noexcept(false) {
+	virtual void update(Vector3 target, bool isMoving, float dt) noexcept(false) {
 		if (animsCount > 0 && anims) {
 			currAnim = isMoving ? 1 : 0;
 			if (currAnim >= animsCount)
@@ -51,7 +51,7 @@ public:
 		}
 	}
 
-	virtual int draw() noexcept(false) {
+	virtual void draw() noexcept(false) {
 		DrawModelEx(model, {pos.x, 0.2, pos.z}, {0, 1, 0}, rotation, scale, Color{255, 255, 255, 255});
 	}
 };

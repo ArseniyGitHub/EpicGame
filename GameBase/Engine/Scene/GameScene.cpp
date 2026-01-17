@@ -40,8 +40,13 @@ void GameScene::draw(Game *game) {
             DrawSphere(p1, 0.15f, ORANGE);
         }
     }
+    terminator->draw();
 
     EndMode3D();
+
+    DrawRectangle(10, 10, 450, 150, Color{0, 0, 0, 128});
+    DrawText(TextFormat("mode: %s", useAI ? "NN" : "A*"), 20, 20, 25, useAI ? SKYBLUE : LIME);
+    DrawText(TextFormat("training: %s; data: %d", isTraining ? "true" : "false", dataset.size()), 20, 55, 25, isTraining ? RED : GRAY);
 }
 
 void GameScene::initCamera() {
@@ -137,11 +142,23 @@ void GameScene::update(Game *game, float dt) {
             hoveredCell = { -1, -1 };
         }
     }
+
+    if (useAI);
+    else syncTerminatorWithPath(dt);
 }
 
 void GameScene::onEnter() {
     initCamera();
     grid = new NavigationGrid(15, 15, 1.5f);
+    terminator = std::make_shared<Terminator>();
+    aiModel = std::make_shared<PathNet>();
+    optimizer = std::make_shared<torch::optim::Adam>(aiModel->parameters(), torch::optim::AdamOptions(0.001));
+    try {
+        torch::load(aiModel, "PathNet.ai");
+    }
+    catch (...) {
+        std::cerr << "Не удалось загрузить модель!\n";
+    }
 }
 
 void GameScene::onExit() {
@@ -154,4 +171,14 @@ GameScene::~GameScene() {
 
 GameScene::GameScene() {
     this->onEnter();
+}
+
+void GameScene::syncTerminatorWithPath(float dt) {
+    if (!currPath.empty()) {
+        Vector3 nextNode(currPath[0]);
+        if (Vector3Distance(terminator->pos, nextNode) < 0.4) {
+            currPath.erase(currPath.begin());
+        }
+        terminator->update(nextNode, true, dt);
+    }
 }

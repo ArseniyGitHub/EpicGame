@@ -1,4 +1,4 @@
-#include <string>
+﻿#include <string>
 #include <raylib.h>
 #include <vector>
 #include <raymath.h>
@@ -114,6 +114,7 @@ int main(){
 */
 
 int main(){
+    system("chcp 65001");
     Game game;
     game.run();
 }

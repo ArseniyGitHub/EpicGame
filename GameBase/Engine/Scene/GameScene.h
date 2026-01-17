@@ -28,7 +28,11 @@ private:
     bool useAI = false;
     bool isTraining = false;
     std::vector<TrainingSample> dataset;
+    std::shared_ptr<torch::optim::Adam> optimizer;
     torch::Tensor getGridTensor(Vector3, Vector3);
+    void collectDataFromAStar();
+    void syncTerminatorWithPath(float dt);
+    void trainStep();
     float
         camSpd = 20.f,
         zoomSpd = 30.f,
