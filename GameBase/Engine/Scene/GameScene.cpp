@@ -221,7 +221,7 @@ GameScene::GameScene() {
 
 torch::Tensor GameScene::getGridTensor(Vector3 a, Vector3 b)
 {
-    auto tensor = torch::zeros({ 1, 3, 15 * 15 });
+    auto tensor = torch::zeros({ 1, 3, grid->height, grid->width });
     for (size_t y = 0; y < grid->height; y++) {
         for (size_t x = 0; x < grid->width; x++) {
             if (!grid->getNode(x, y)->walkable) {
@@ -239,7 +239,7 @@ torch::Tensor GameScene::getGridTensor(Vector3 a, Vector3 b)
     int ey = round(b.z / grid->cellSize);
     if (ex >= 0 && ex < grid->width && ey >= 0 && ey < grid->height)
     {
-        tensor[0][2][ay][ax] = 1;
+        tensor[0][2][ey][ex] = 1;
     }
     return tensor;
 }
@@ -254,12 +254,12 @@ void GameScene::collectDataFromAStar()
     float dz = next.z - terminator->pos.z;
     if (dz > 0.5) act = 0;
     else if (dz < -0.5) act = 1;
-    if (dx > 0.5) act = 2;
+    else if (dx > 0.5) act = 2;
     else if (dx < -0.5) act = 3;
     if (act != -1) {
-        dataset.push_back({ input, act });
+        dataset.push_back({ input.clone(), act});
     }
-    if (dataset.size() > 2000) dataset.erase(dataset.begin());
+    if (dataset.size() > 5000) dataset.erase(dataset.begin());
 }
 
 void GameScene::syncTerminatorWithPath(float dt) {
